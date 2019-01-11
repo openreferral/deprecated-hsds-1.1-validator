@@ -1,0 +1,46 @@
+{
+  "name": "openreferral-validator",
+  "private": true,
+  "version": "0.0.1",
+  "description": "Open Referral - Validator API",
+  "dependencies": {
+    "boom": "^7.3.0",
+    "hapi": "^17.8.1",
+    "hapi-swaggered": "^3.0.3",
+    "hoek": "^6.1.2",
+    "inert": "^5.1.2",
+    "joi": "^14.3.1",
+    "lodash": "^4.17.11",
+    "nconf": "^0.10.0",
+    "recursive-readdir": "^2.2.2",
+    "tableschema": "^1.9.1",
+    "vision": "^5.4.4",
+    "winston": "^3.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.2.3",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "eslint": "^5.12.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-react": "^7.4.0",
+    "hubot-test-helper": "^1.9.0",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.12.1",
+    "sinon": "^7.2.2",
+    "sinon-chai": "^2.14.0",
+    "webpack": "^4.28.4",
+    "webpack-dev-server": "^3.1.14"
+  },
+  "scripts": {
+    "start": "node_modules/.bin/nodemon --ignore src/js/ --ext js,html --exec babel-node src/server.js",
+    "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html --exec babel-node src/server.js"
+  },
+  "main": "src/server.js",
+  "author": "@spilio",
+  "license": "MIT"
+}
