@@ -11,8 +11,11 @@ const {
   Resources
 } = require('../lib/resources');
 
-module.exports = function(server) {
+const {
+  Resource
+} = require('../schemas/resources.js');
 
+module.exports = function(server) {
 
   /**
    * GET /resources
@@ -27,16 +30,14 @@ module.exports = function(server) {
       description: 'Returns the list of valid resources',
       plugins: {
         'hapi-swaggered': {
-          operationId: 'getResources',
-          responses: {
-            200: {
-              description: 'Success'
-            },
-            500: {
-              description: 'Internal Server Error'
-            }
-          }
+          operationId: 'getResources'
         }
+      },
+      response: {
+        schema: Joi.array().items(Resource).meta({
+          className: 'Resources',
+          description: 'A collection of Open Referral resource definitions'
+        })
       },
       handler() {
 
@@ -68,15 +69,7 @@ module.exports = function(server) {
       description: 'Returns the definition of a resource by name',
       plugins: {
         'hapi-swaggered': {
-          operationId: 'getResourceByName',
-          responses: {
-            200: {
-              description: 'Success'
-            },
-            500: {
-              description: 'Internal Server Error'
-            }
-          }
+          operationId: 'getResourceByName'
         }
       },
       validate: {
@@ -84,6 +77,9 @@ module.exports = function(server) {
           name: Joi.string().required()
             .description('The name of the resource')
         }
+      },
+      response: {
+        // schema: Resource
       },
       handler(request) {
 
@@ -99,6 +95,11 @@ module.exports = function(server) {
         // with full meta data
         try {
           const resource = Resources.getDefinition(name, true);
+
+          _.unset(resource, 'path');
+          _.unset(resource, 'format');
+          _.unset(resource, 'mediatype');
+          
           return resource;
         } catch (e) {
           return Boom.notFound(e);

@@ -138,14 +138,29 @@ async function scanTable({
   });
 
   // read the table
-  const iterator = await table.iter();
+  const iterator = await table.iter({
+    forceCast: false
+  });
 
   let done;
+  let idx = 0;
 
   do {
 
+    try {
     const res = await iterator.next();
+    idx += 1;
     done = res.done;
+
+    const {value} = res;
+
+  } catch (e){
+    console.error(e.message);
+    console.error(e.errors)
+    done = true;
+    throw new TableSchemaError(e.message)
+  }
+
   } while(! done);
 
 
