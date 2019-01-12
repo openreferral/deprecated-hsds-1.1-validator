@@ -9,7 +9,7 @@ const Joi = require('joi');
 const Boom = require('boom');
 const {
   Resources
-} = require('../lib/validators/resources');
+} = require('../lib/resources');
 
 module.exports = function(server) {
 

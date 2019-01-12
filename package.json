@@ -38,7 +38,8 @@
   },
   "scripts": {
     "start": "node_modules/.bin/nodemon --ignore src/js/ --ext js,html --exec babel-node src/server.js",
-    "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html --exec babel-node src/server.js"
+    "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html --exec babel-node src/server.js",
+    "test": "mocha --recursive --require @babel/register --colors test/"
   },
   "main": "src/server.js",
   "author": "@spilio",

@@ -63,7 +63,6 @@ export class Validator {
     return this._type;
   }
 
-
   /**
    * Validates an input data source against
    * the resource specific schema.
@@ -130,90 +129,24 @@ async function scanTable({
   from = 1,
   errors = []
 } = {}) {
-  try {
+  // create a new table instance
+  // using the selected resource
+  // schema and data source
+  const table = await Table.load(source, {
+    schema,
+    headers: headersRow
+  });
 
-    // create a new table instance
-    // using the selected resource
-    // schema and data source
-    const table = await Table.load(source, {
-      schema,
-      headers: headersRow,
-      trim: true,
-      from
-    });
+  // read the table
+  const iterator = await table.iter();
 
-    // read the table
-    const data = await table.read({});
-    console.log(data);
+  let done;
 
-  } catch (e) {
+  do {
 
-    let line = null;
+    const res = await iterator.next();
+    done = res.done;
+  } while(! done);
 
-    if (e instanceof TableSchemaError) {
-
-      line = from + e.rowNumber;
-
-      // create a new validation error instance
-      const err = new DataValidationError({
-        row: line - 1,
-        col: e.columnNumber,
-        description: e.message
-      });
-
-      // add it to the list
-      errors.push(err);
-
-    } else if ((typeof e.errors !== 'undefined') && (e.errors.length > 0)) {
-
-      e.errors.forEach(error => {
-
-        line = from + error.rowNumber;
-
-        // create a new validation error instance
-        const err = new DataValidationError({
-          row: line - 1,
-          col: error.columnNumber,
-          description: error.message
-        });
-
-        // add it to the list
-        errors.push(err);
-      });
-
-    } else {
-
-      // check if we got an error regarding
-      // the end of stream
-      if (e.message === 'path.startsWith is not a function') {
-        return;
-      }
-
-      // otherwise throw a validation error
-      const err = new ValidatorError(e.message, {
-        row: e.rowNumber,
-        col: e.columnNumber,
-        description: e.message
-      });
-      throw err;
-    }
-
-    /*
-     * recurse
-     */
-
-    if (!(source instanceof Array)) {
-
-      // resume operation from the next line
-      await scanTable({
-        source,
-        schema,
-        errors,
-        headersRow: -1,
-        from: line
-      });
-    }
-
-  }
 
 }

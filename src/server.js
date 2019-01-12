@@ -18,6 +18,13 @@ const Inert = require('inert');
  */
 nconf.argv().env();
 
+// set defaults
+nconf.overrides({
+  'HOST': 'localhost',
+  'PORT': 1330
+});
+
+
 let log = null;
 
 const Application = (function Bootstrap() {
@@ -69,6 +76,8 @@ const Application = (function Bootstrap() {
       host: nconf.get('HOST'),
       port: nconf.get('PORT')
     });
+
+    log.info(`Server launched [${nconf.get('HOST')}:${nconf.get('PORT')}]`)
 
     // setup routing
     await _setupRouting(_server);
