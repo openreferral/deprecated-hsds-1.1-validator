@@ -20,7 +20,7 @@ module.exports = function(server) {
     method: 'GET',
     config: {
       tags: ['api'],
-      description: 'Returns health status',
+      description: 'Get health status',
       plugins: {
         'hapi-swaggered': {
           operationId: 'getHealth',
@@ -34,7 +34,7 @@ module.exports = function(server) {
           }
         }
       },
-      handler(request, reply) {
+      handler() {
         return 'ok';
       }
     }

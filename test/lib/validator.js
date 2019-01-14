@@ -1,5 +1,3 @@
-const fs = require('fs');
-const path = require('path');
 const chai = require('chai');
 const sinon = require('sinon');
 const SinonChai = require('sinon-chai');
@@ -7,9 +5,6 @@ const chaiAsPromised = require('chai-as-promised');
 const should = chai.should();
 chai.use(SinonChai);
 chai.use(chaiAsPromised);
-const {errors} = require('tableschema');
-const {TableSchemaError} = errors;
-
 
 const {
   Validator
@@ -17,8 +12,7 @@ const {
 
 
 const {
-  UnsupportedValidatorError,
-  DataValidationError
+  UnsupportedValidatorError
 } = require('../../src/lib/errors');
 
 const sandbox = sinon.createSandbox();
@@ -69,22 +63,9 @@ context('Validator', () => {
       return p.should.be.fulfilled;
     });
 
-    it('should read data from a local CSV', () => {
-      const file = path.resolve(__dirname, 'program.csv');
-
-      // check if the file exists
-      fs.statSync(file);
-
-      const stream = fs.createReadStream(file);
-
-      // validate the source against the schema
-      const p = new Validator('program').validate(stream);
-      return p.should.be.fulfilled;
-    });
-
     it('should throw an error if a row has less fields', async () => {
       const data = [
-        ['a','b','c'],
+        ['a', 'b', 'c'],
         [
           '1',
           'c89eb05c-62dd-4b64-b494-0cc347b6ea7f',
@@ -93,14 +74,15 @@ context('Validator', () => {
       ];
 
       // validate the source against the schema
-      const p = new Validator('program').validate(data);
-      return p.should.be.rejectedWith(TableSchemaError);
-
+      const res = await new Validator('program').validate(data);
+      res.errors.should.have.length(1);
+      res.errors[0].row.should.eq(2);
+      res.errors[0].description.should.eq('The column header names do not match the field names in the schema');
     });
 
-    it('should throw an error if a row has more fields', () => {
+    it('should throw an error if a row has more fields', async () => {
       const data = [
-        ['a','b','c','d','e'],
+        ['a', 'b', 'c', 'd', 'e'],
         [
           '1',
           'c89eb05c-62dd-4b64-b494-0cc347b6ea7f',
@@ -111,26 +93,29 @@ context('Validator', () => {
       ];
 
       // validate the source against the schema
-      const p = new Validator('program').validate(data);
-      return p.should.be.rejectedWith(TableSchemaError);
+      const res = await new Validator('program').validate(data);
+      res.errors.should.have.length(1);
+      res.errors[0].row.should.eq(2);
+      res.errors[0].description.should.eq('The column header names do not match the field names in the schema');
     });
 
 
-    it('should throw an error if a bad enum value is provided', () => {
+    it('should throw an error if a bad enum value is provided', async () => {
       const data = [
-        ['a','b','c','d'],
+        ['a', 'b', 'c', 'd'],
         ['1', '1', 'cd', 'details go here'],
         ['1', '1', 'bad_enum', 'details go here']
       ];
 
       // validate the source against the schema
-      const p = new Validator('accessibility_for_disabilities').validate(data);
-      return p.should.be.rejectedWith(TableSchemaError);
+      const res = await new Validator('accessibility_for_disabilities').validate(data);
+      res.errors.should.have.length(2);
+      res.errors[0].row.should.eq(2);
     });
 
-    it('should throw an error if wrong type of value is provided', () => {
+    it('should throw an error if wrong type of value is provided', async () => {
       const data = [
-        ['a','b','c','d','e', 'f'],
+        ['a', 'b', 'c', 'd', 'e', 'f'],
         [123,
           'org A',
           'alter org A', 'A descr',
@@ -141,13 +126,15 @@ context('Validator', () => {
       ];
 
       // validate the source against the schema
-      const p = new Validator('organization').validate(data);
-      return p.should.be.rejectedWith(TableSchemaError);
+      const res = await new Validator('organization').validate(data);
+      res.errors.should.have.length(1);
+      res.errors[0].row.should.eq(2);
+      res.errors[0].description.should.eq('The column header names do not match the field names in the schema');
     });
 
-    it('should throw an error if a bad formatted \'email\' value is provided', () => {
+    it('should throw an error if a bad formatted \'email\' value is provided', async () => {
       const data = [
-        ['a','b','c','d','e', 'f', 'g','h','i','j'],
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
         ['aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1',
           'org A',
           'alter org A', 'A descr',
@@ -158,14 +145,15 @@ context('Validator', () => {
       ];
 
       // validate the source against the schema
-      const p = new Validator('organization').validate(data);
-      return p.should.be.rejectedWith(TableSchemaError);
+      const res = await new Validator('organization').validate(data);
+      res.errors.should.have.length(1);
+      res.errors[0].row.should.eq(2);
     });
 
 
-    it('should throw an error if a bad formatted \'uri\' value is provided', () => {
+    it('should throw an error if a bad formatted \'uri\' value is provided', async () => {
       const data = [
-        ['a','b','c','d','e', 'f', 'g','h','i','j'],
+        ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j'],
         ['aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1',
           'org A',
           'alter org A', 'A descr',
@@ -176,8 +164,9 @@ context('Validator', () => {
       ];
 
       // validate the source against the schema
-      const p = new Validator('organization').validate(data);
-      return p.should.be.rejectedWith(TableSchemaError);
+      const res = await new Validator('organization').validate(data);
+      res.errors.should.have.length(1);
+      res.errors[0].row.should.eq(2);
     });
 
   });

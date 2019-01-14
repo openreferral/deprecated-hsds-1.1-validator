@@ -4,18 +4,14 @@
  * @author Chris Spiliotopoulos
  */
 
-const _ = require('lodash');
 const Joi = require('joi');
 const Boom = require('boom');
-const {
-  Resources
-} = require('../lib/resources');
 
 const {
   Resource
 } = require('../schemas/resources.js');
 
-module.exports = function(server) {
+module.exports = function(server, datapackage) {
 
   /**
    * GET /resources
@@ -27,7 +23,7 @@ module.exports = function(server) {
     method: 'GET',
     config: {
       tags: ['api'],
-      description: 'Returns the list of valid resources',
+      description: 'Get the list of valid Open Referral logical resources',
       plugins: {
         'hapi-swaggered': {
           operationId: 'getResources'
@@ -40,17 +36,7 @@ module.exports = function(server) {
         })
       },
       handler() {
-
-        let resources = Resources.getDefinitions();
-
-        resources = _.map(resources, (o) => ({
-          name: o.name,
-          title: _.capitalize(o.name.split('_').join(' ')),
-          description: o.description
-        }));
-
-        resources = _.sortBy(resources, 'name');
-
+        const {resources} = datapackage;
         return resources;
       }
     }
@@ -66,7 +52,7 @@ module.exports = function(server) {
     method: 'GET',
     config: {
       tags: ['api'],
-      description: 'Returns the definition of a resource by name',
+      description: 'Get the definition of a resource by name',
       plugins: {
         'hapi-swaggered': {
           operationId: 'getResourceByName'
@@ -94,12 +80,7 @@ module.exports = function(server) {
         // get the selected resource
         // with full meta data
         try {
-          const resource = Resources.getDefinition(name, true);
-
-          _.unset(resource, 'path');
-          _.unset(resource, 'format');
-          _.unset(resource, 'mediatype');
-          
+          const resource = datapackage.getResourceDefinition(name, true);
           return resource;
         } catch (e) {
           return Boom.notFound(e);

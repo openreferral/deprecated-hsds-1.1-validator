@@ -1,5 +1,5 @@
 # Base image
-FROM node:7-slim
+FROM node:8-slim
 
 ADD package.json /tmp/package.json
 
@@ -17,7 +17,7 @@ RUN cd app && npm install
 WORKDIR /app/src
 
 # Expose the port
-EXPOSE 8080
+EXPOSE 1400
 
 # Start the app
 CMD node server.js

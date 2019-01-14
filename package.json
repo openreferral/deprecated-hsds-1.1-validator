@@ -5,6 +5,7 @@
   "description": "Open Referral - Validator API",
   "dependencies": {
     "boom": "^7.3.0",
+    "datapackage": "^1.1.1",
     "hapi": "^17.8.1",
     "hapi-swaggered": "^3.0.3",
     "hoek": "^6.1.2",
@@ -37,8 +38,8 @@
     "webpack-dev-server": "^3.1.14"
   },
   "scripts": {
-    "start": "node_modules/.bin/nodemon --ignore src/js/ --ext js,html --exec babel-node src/server.js",
-    "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html --exec babel-node src/server.js",
+    "start": "node_modules/.bin/nodemon --ignore src/js/ --ext js,html --exec babel-node src/app.js",
+    "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html --exec babel-node src/app.js",
     "test": "mocha --recursive --require @babel/register --colors test/"
   },
   "main": "src/server.js",

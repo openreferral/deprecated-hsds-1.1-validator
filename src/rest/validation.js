@@ -4,15 +4,13 @@
  * @author Chris Spiliotopoulos
  */
 
-const _ = require('lodash');
-const Joi = require('joi');
 const Boom = require('boom');
+
 const {
-  Validator
-} = require('../lib/validator');
+  ValidationResult
+} = require('../schemas/validation');
 
-
-module.exports = function(server) {
+module.exports = function(server, datapackage) {
 
   /**
    * GET /resources
@@ -24,7 +22,7 @@ module.exports = function(server) {
     method: 'POST',
     config: {
       tags: ['api'],
-      description: 'Validates a CSV data file using a specific Open Referral resource schema',
+      description: 'Validate a CSV data file using a specific Open Referral resource schema',
       plugins: {
         'hapi-swaggered': {
           operationId: 'validateCsvResource'
@@ -35,21 +33,35 @@ module.exports = function(server) {
         parse: true,
         allow: 'multipart/form-data'
       },
-
+      response: {
+        schema: ValidationResult
+      },
       async handler(request, h) {
 
         // get the uploaded resource type
-        const type = request.payload.type;
+        const {
+          payload
+        } = request;
+        const {
+          type
+        } = payload;
 
         // get the file stream
         const stream = request.payload.file;
 
         try {
-          await new Validator(type).validate(stream);
 
-          return h.response('Resource is valid').code(200);
+          // validate the input stream using
+          // the provided resource type definition
+          const result = await datapackage.validate(stream, type);
+
+          if (result.errors.length > 0) {
+            return h.response(result).code(400);
+          }
+
+          return h.response(result).code(200);
         } catch (e) {
-          return Boom.badRequest(e);
+          return Boom.badRequest(e.toString());
         }
 
       }

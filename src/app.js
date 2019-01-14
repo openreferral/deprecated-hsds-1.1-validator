@@ -9,9 +9,11 @@ const Hapi = require('hapi');
 const _ = require('lodash');
 const winston = require('winston');
 const recursive = require('recursive-readdir');
-const hapiSwaggered = require('hapi-swaggered');
+const pluginHapiSwaggered = require('hapi-swaggered');
 const Vision = require('vision');
 const Inert = require('inert');
+
+const {DataPackage} = require('./lib/datapackage');
 
 /*
  * Load configuration environment
@@ -20,8 +22,8 @@ nconf.argv().env();
 
 // set defaults
 nconf.overrides({
-  'HOST': 'localhost',
-  'PORT': 1330
+  HOST: 'localhost',
+  PORT: 1400
 });
 
 
@@ -32,6 +34,8 @@ const Application = (function Bootstrap() {
   // the server instance
   let _server = null;
 
+  // the data package instance
+  let _datapackage = null;
 
   /**
    * Sets up the logging framework.
@@ -58,8 +62,6 @@ const Application = (function Bootstrap() {
    */
   const _setupServer = async () => {
 
-    log.info('Setting up server');
-
     /*
      * Hapi server instance
      */
@@ -77,7 +79,8 @@ const Application = (function Bootstrap() {
       port: nconf.get('PORT')
     });
 
-    log.info(`Server launched [${nconf.get('HOST')}:${nconf.get('PORT')}]`)
+    // load the data package instance
+    _datapackage = await DataPackage.load(`${__dirname}/datapackage.json`);
 
     // setup routing
     await _setupRouting(_server);
@@ -88,6 +91,7 @@ const Application = (function Bootstrap() {
     // start the server
     await _server.start();
 
+    log.info(`Server launched [${nconf.get('HOST')}:${nconf.get('PORT')}]`);
   };
 
   /**
@@ -114,7 +118,7 @@ const Application = (function Bootstrap() {
       Inert,
       Vision,
       {
-        plugin: require('hapi-swaggered'),
+        plugin: pluginHapiSwaggered,
         options: {
           host,
           basePath,
@@ -122,13 +126,23 @@ const Application = (function Bootstrap() {
           cors: false,
           info: {
             title: 'OpenReferral - Validator',
-            description: 'OpenReferral - Validator',
+            description: 'Validator API for Open Referral data resource bundles.',
             version: '1',
             contact: {
               name: 'Chris Spiliotopoulos (@spilio)',
-              url: 'https://github.com/spilio'
+              url: 'https://github.com/spilio',
+              email: 'chrysanthos.spiliotopoulos@gmail.com'
+            },
+            license: {
+              name: 'MIT',
+              url: 'https://opensource.org/licenses/MIT'
             }
-          }
+          },
+          tags: [
+            {name: 'open referral'},
+            {name: 'validator'},
+            {name: 'open api'}
+          ]
         }
       }
     ]);
@@ -147,13 +161,12 @@ const Application = (function Bootstrap() {
       /*
        * load controller routes
        */
-      log.info('Registering controller routes');
       const normalizedPath = path.resolve(__dirname, './rest');
 
       // load all controller modules recursively
       recursive(normalizedPath, (err, files) => {
         files.forEach((file) => {
-          require(file)(server);
+          require(file)(server, _datapackage);
         });
 
         // done
@@ -199,4 +212,3 @@ const Application = (function Bootstrap() {
  * Start the application
  */
 Application.start();
-log.info('Application started');

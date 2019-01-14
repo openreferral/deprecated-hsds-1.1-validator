@@ -7,7 +7,7 @@
     "type": "CC-BY-SA-4.0",
     "name": "Creative Commons Attribution-ShareAlike 4.0"
   },
-  "version": "1.1",
+  "version": "1.0",
   "homepage": "http://docs.openreferral.org",
   "resources": [{
       "name": "organization",
@@ -62,7 +62,7 @@
           {
             "name": "url",
             "type": "string",
-            "format": "uri",
+            "format": "url",
             "description": "The URL (website address) of the organization.",
             "constraints": {
               "required": false
@@ -71,7 +71,7 @@
           {
             "name": "tax_status",
             "type": "string",
-            "description": "Government assigned tax designation for for tax-exempt organizations.",
+            "description": "Government assigned tax designation for tax-exempt organizations.",
             "constraints": {
               "required": false
             }
@@ -87,7 +87,7 @@
           {
             "name": "year_incorporated",
             "type": "date",
-            "format": "default",
+            "format": "%Y",
             "description": "The year in which the organization was legally formed.",
             "constraints": {
               "required": false
@@ -102,7 +102,7 @@
             }
           }
         ],
-        "primaryKey": ["id"]
+        "primaryKey": "id"
       }
     },
     {
@@ -147,12 +147,12 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["organization_id"],
+          "fields": "organization_id",
           "reference": {
             "resource": "organization",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -219,7 +219,7 @@
             "name": "url",
             "description": "URL of the service",
             "type": "string",
-            "format": "uri",
+            "format": "url",
             "constraints": {
               "required": false
             }
@@ -275,7 +275,7 @@
             }
           },
           {
-            "name": "accrediations",
+            "name": "accreditations",
             "description": "Details of any accreditations. Accreditation is the formal evaluation of an organization or program against best practice standards set by an accrediting organization.",
             "type": "string",
             "constraints": {
@@ -299,19 +299,19 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["organization_id"],
+            "fields": "organization_id",
             "reference": {
               "resource": "organization",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["program_id"],
+            "fields": "program_id",
             "reference": {
               "resource": "program",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -355,19 +355,19 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["taxonomy_id"],
+            "fields": "taxonomy_id",
             "reference": {
               "resource": "taxonomy",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -411,19 +411,19 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["location_id"],
+            "fields": "location_id",
             "reference": {
               "resource": "location",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -483,12 +483,12 @@
             "type": "number"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["organization_id"],
+          "fields": "organization_id",
           "reference": {
             "resource": "organization",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -569,40 +569,40 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["organization_id"],
+            "fields": "organization_id",
             "reference": {
               "resource": "organization",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["location_id"],
+            "fields": "location_id",
             "reference": {
               "resource": "location",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["contact_id"],
+            "fields": "contact_id",
             "reference": {
               "resource": "contact",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_at_location_id"],
+            "fields": "service_at_location_id",
             "reference": {
               "resource": "service_at_location",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -660,26 +660,26 @@
             "format": "email"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["organization_id"],
+            "fields": "organization_id",
             "reference": {
               "resource": "organization",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_at_location_id"],
+            "fields": "service_at_location_id",
             "reference": {
               "resource": "service_at_location",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -774,12 +774,12 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["location_id"],
+          "fields": "location_id",
           "reference": {
             "resource": "location",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -874,12 +874,12 @@
 
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["location_id"],
+          "fields": "location_id",
           "reference": {
             "resource": "location",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -933,26 +933,26 @@
             "type": "time"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["location_id"],
+            "fields": "location_id",
             "reference": {
               "resource": "location",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_at_location_id"],
+            "fields": "service_at_location_id",
             "reference": {
               "resource": "service_at_location",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -1023,26 +1023,26 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["location_id"],
+            "fields": "location_id",
             "reference": {
               "resource": "location",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["service_at_location_id"],
+            "fields": "service_at_location_id",
             "reference": {
               "resource": "service_at_location",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -1079,19 +1079,19 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["organization_id"],
+            "fields": "organization_id",
             "reference": {
               "resource": "organization",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -1128,12 +1128,12 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["service_id"],
+          "fields": "service_id",
           "reference": {
             "resource": "service",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -1169,12 +1169,12 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["service_id"],
+          "fields": "service_id",
           "reference": {
             "resource": "service",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -1205,12 +1205,12 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["service_id"],
+          "fields": "service_id",
           "reference": {
             "resource": "service",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -1244,12 +1244,12 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["service_id"],
+          "fields": "service_id",
           "reference": {
             "resource": "service",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -1285,19 +1285,19 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["service_id"],
+            "fields": "service_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["location_id"],
+            "fields": "location_id",
             "reference": {
               "resource": "location",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -1342,12 +1342,12 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-          "fields": ["location_id"],
+          "fields": "location_id",
           "reference": {
             "resource": "location",
-            "fields": ["id"]
+            "fields": "id"
           }
         }]
       }
@@ -1401,7 +1401,7 @@
             }
           }
         ],
-        "primaryKey": ["id"]
+        "primaryKey": "id"
       }
     },
     {
@@ -1476,68 +1476,68 @@
             }
           }
         ],
-        "primaryKey": ["id"],
+        "primaryKey": "id",
         "foreignKeys": [{
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "location",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "service",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "organization",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "program",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "address",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "contact",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "holiday_schedules",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "regular_schedules",
-              "fields": ["id"]
+              "fields": "id"
             }
           },
           {
-            "fields": ["resource_id"],
+            "fields": "resource_id",
             "reference": {
               "resource": "phone",
-              "fields": ["id"]
+              "fields": "id"
             }
           }
         ]
@@ -1574,7 +1574,7 @@
             "type": "string"
           }
         ],
-        "primaryKey": ["id"]
+        "primaryKey": "id"
       }
     }
   ]
