@@ -4,6 +4,7 @@
  * @author Chris Spiliotopoulos
  */
 
+const _ = require('lodash');
 const Boom = require('boom');
 const Joi = require('joi');
 
@@ -26,6 +27,12 @@ module.exports = function(server, datapackage) {
     config: {
       tags: ['api'],
       description: 'Validate a CSV data file using a specific Open Referral resource schema',
+      notes: [
+        'The operation validates an uploaded CSV data stream using the ',
+        'definition of a specified resource as found in the standard Open Referral data package',
+        'specification.  Clients should send a form payload containg a "type" field with the name ',
+        'of the Open Referral logical resource and a "file" that contains the CSV data stream.'
+      ].join(''),
       plugins: {
         'hapi-swaggered': {
           operationId: 'validateCsvResource'
@@ -87,7 +94,12 @@ module.exports = function(server, datapackage) {
     method: 'GET',
     config: {
       tags: ['api'],
-      description: 'Validate a data package according to the Open Referral schema.',
+      description: 'Validate a data package using the Open Referral specification.',
+      notes: [
+        'The operation expects the URI of a valid "datapackage.json" file that conforms to the Open Referral schema. ',
+        'The validator will check all enlisted resources in turn and will return a collection of validation results ',
+        'that correspond to each one of the resources.  The file can be either local or remote.'
+      ].join(''),
       plugins: {
         'hapi-swaggered': {
           operationId: 'validateDatapackage'
@@ -100,7 +112,7 @@ module.exports = function(server, datapackage) {
         }
       },
       response: {
-        // schema: ValidationResult
+        schema: Joi.array().items(ValidationResult).description('A collection of validation results')
       },
       async handler(request, h) {
 
@@ -118,8 +130,23 @@ module.exports = function(server, datapackage) {
           // load the data package
           const dp = await DataPackage.load(uri);
 
+          // validate the full package
+          const results = await dp.validatePackage();
 
-          return h.code(200);
+          // check if there is at least 1 failed validation
+          const matches = _.find(results, {
+            valid: false
+          });
+
+          // add the results to the response
+          const res = h.response(results);
+
+          // if there is a failed validation, return 400
+          if (matches) {
+            res.code(400);
+          }
+
+          return res;
         } catch (e) {
           return Boom.badRequest(e.message);
         }

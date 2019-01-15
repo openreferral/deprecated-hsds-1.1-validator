@@ -142,7 +142,9 @@ const Application = (function Bootstrap() {
             {name: 'open referral'},
             {name: 'validator'},
             {name: 'open api'}
-          ]
+          ],
+          consumes: ['multipart/form-data'],
+          produces: ['application/json']
         }
       }
     ]);

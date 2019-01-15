@@ -24,6 +24,7 @@ module.exports = function(server, datapackage) {
     config: {
       tags: ['api'],
       description: 'Get the list of valid Open Referral logical resources',
+      notes: 'Returns the list of declared resources as defined within the official Open Referral data package descriptor.',
       plugins: {
         'hapi-swaggered': {
           operationId: 'getResources'
@@ -58,6 +59,7 @@ module.exports = function(server, datapackage) {
     config: {
       tags: ['api'],
       description: 'Get the definition of a resource by name',
+      notes: 'Returns the full definition of a resource as defined within the Open Referral data package descriptor.',
       plugins: {
         'hapi-swaggered': {
           operationId: 'getResourceByName'

@@ -21,6 +21,7 @@ module.exports = function(server) {
     config: {
       tags: ['api'],
       description: 'Get health status',
+      notes: 'Returns status 200 OK - useful for health checks inside a cluster (e.g. kubernetes)',
       plugins: {
         'hapi-swaggered': {
           operationId: 'getHealth',
