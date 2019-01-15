@@ -5,17 +5,20 @@
  */
 
 const Boom = require('boom');
+const Joi = require('joi');
 
 const {
   ValidationResult
 } = require('../schemas/validation');
 
+const {
+  DataPackage
+} = require('../lib/datapackage');
+
 module.exports = function(server, datapackage) {
 
   /**
-   * GET /resources
-   *
-   * Returns health status.
+   * Validates a CSV resource data file.
    */
   server.route({
     path: '/validate/csv',
@@ -75,5 +78,54 @@ module.exports = function(server, datapackage) {
     }
   });
 
+
+  /**
+   * Validates a data package.
+   */
+  server.route({
+    path: '/validate/datapackage',
+    method: 'GET',
+    config: {
+      tags: ['api'],
+      description: 'Validate a data package according to the Open Referral schema.',
+      plugins: {
+        'hapi-swaggered': {
+          operationId: 'validateDatapackage'
+        }
+      },
+      validate: {
+        query: {
+          uri: Joi.string().required()
+            .description('Data package descriptor file URL')
+        }
+      },
+      response: {
+        // schema: ValidationResult
+      },
+      async handler(request, h) {
+
+        // get the uploaded resource type
+        const {
+          query
+        } = request;
+
+        const {
+          uri
+        } = query;
+
+        try {
+
+          // load the data package
+          const dp = await DataPackage.load(uri);
+
+
+          return h.code(200);
+        } catch (e) {
+          return Boom.badRequest(e.message);
+        }
+
+      }
+    }
+  });
 
 };

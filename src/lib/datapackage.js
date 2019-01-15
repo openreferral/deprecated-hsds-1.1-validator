@@ -29,7 +29,7 @@ export class DataPackage {
    * @param {[type]} datapackage [description]
    */
   constructor(datapackage) {
-    this.datapackage = datapackage;
+    this.package = datapackage;
   }
 
   /**
@@ -51,7 +51,7 @@ export class DataPackage {
    * @return {[type]} [description]
    */
   get resourceNames() {
-    return this.datapackage.resourceNames;
+    return this.package.resourceNames;
   }
 
   /**
@@ -62,7 +62,7 @@ export class DataPackage {
    */
   get resources() {
 
-    return _.map(this.datapackage.resources, (o) => ({
+    return _.map(this.package.resources, (o) => ({
       name: o.name,
       source: o.source,
       description: o.descriptor.description
@@ -77,7 +77,7 @@ export class DataPackage {
   getResourceDefinition(name, schema = false) {
 
     // get the resource definition by name
-    const resource = this.datapackage.getResource(name);
+    const resource = this.package.getResource(name);
 
     if (!resource) {
       throw new Error('Resource not found');
@@ -100,6 +100,138 @@ export class DataPackage {
   }
 
   /**
+   * Validates the contents of the data package.
+   *
+   * @return {Promise} [description]
+   */
+  async validatePackage() {
+
+    if (!this.package) {
+      throw new Error('Undefined package instance - use the static load() method to load a package definition first');
+    }
+
+    // get the list of declared resources
+    const {
+      resources
+    } = this.package;
+
+    const results = [];
+
+    // iterate through all declared resources
+    for (const resource of resources) {
+
+      // validate each individual resource
+      const result = await this.validatePackageResource(resource, {
+        relations: true
+      });
+
+      // set the resource name on the result set
+      result.resource = resource.name;
+
+      // add it to the results collection
+      results.push(result);
+    }
+
+    // return the validation results
+    return results;
+  }
+
+  /**
+   * Validates a resource declared in the data
+   * package.
+   * @param  {[type]} data [description]
+   * @return {[type]}      [description]
+   */
+  async validatePackageResource(resource, {
+    relations = false
+  } = {}) {
+
+    try {
+
+      if (typeof resource === 'undefined') {
+        throw new DataValidationError('A valid package resource is required');
+      }
+
+      /*
+       * iterate the data set
+       */
+      const iterator = await resource.iter({
+        relations,
+        forceCast: true
+      });
+
+      let done, value;
+
+      const result = {
+        valid: true,
+        errors: []
+      };
+
+      do {
+
+        try {
+
+          // get the next line
+          const res = await iterator.next();
+          ({
+            done,
+            value
+          } = res);
+
+          /*
+           * in 'forceCast' mode, bad lines will be
+           * replaced with an error instance
+           */
+          if (value instanceof TableSchemaError) {
+
+            result.valid = false;
+
+            // get the error details and add it to
+            // the result list
+            const error = (value.errors.length > 0 ? value.errors[0] : value);
+            const {
+              columnNumber,
+              rowNumber,
+              message
+            } = error;
+            result.errors.push({
+              col: columnNumber,
+              row: rowNumber,
+              description: message
+            });
+          }
+
+
+        } catch (e) {
+
+          const error = e.errors[0];
+          const {
+            columnNumber,
+            rowNumber,
+            message
+          } = error;
+          throw new DataValidationError({
+            row: rowNumber,
+            col: columnNumber,
+            description: message
+          });
+        }
+
+      } while (!done);
+
+      if (result.errors.length === 0) {
+        delete result.errors;
+      }
+
+      return result;
+
+    } catch (e) {
+      throw e;
+    }
+  }
+
+
+  /**
    * Validates an input data source against
    * a resource specific schema.
    * @param  {[type]} data [description]
@@ -120,7 +252,7 @@ export class DataPackage {
       }
 
       // get the selected resource definition
-      const resource = this.datapackage.getResource(resourceName);
+      const resource = this.package.getResource(resourceName);
 
       // create a new table instance
       // using the selected resource

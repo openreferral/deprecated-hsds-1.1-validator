@@ -78,7 +78,7 @@ context('/resources', () => {
       form.append('type', 'contact');
 
       // add the file stream to the form
-      const fileStream = fs.createReadStream(`${__dirname}/contact.csv`);
+      const fileStream = fs.createReadStream(`${__dirname}/../data/package/resources/contact.csv`);
       form.append('file', fileStream);
 
       // convert the form to payload
@@ -96,6 +96,45 @@ context('/resources', () => {
       response.result.should.have.property('valid');
       response.result.valid.should.be.true;
     });
+
+  });
+
+  context('GET /validate/datapackage', () => {
+
+    it('should return 400 if descriptor URI is not provided', async () => {
+
+      const response = await server.inject({
+        method: 'GET',
+        url: '/validate/datapackage'
+      });
+
+      response.statusCode.should.equal(400);
+    });
+
+    it('should return 400 if URI is invalid', async () => {
+
+      const uri = 'a very bad URI';
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/validate/datapackage?uri=${uri}`
+      });
+
+      response.statusCode.should.equal(400);
+    });
+
+    it('should validate the data package', async () => {
+
+      const uri = `${__dirname}/../data/package/datapackage.json`;
+
+      const response = await server.inject({
+        method: 'GET',
+        url: `/validate/datapackage?uri=${uri}`
+      });
+
+      response.statusCode.should.equal(400);
+    });
+
 
   });
 

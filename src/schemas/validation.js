@@ -14,6 +14,8 @@ const ValidationError = Joi.object().keys({
 });
 
 const ValidationResult = Joi.object().keys({
+  resource: Joi.string()
+    .description('The resource name'),
   valid: Joi.boolean().required().description('Status flag indicating whether the resource is valid or not'),
   errors: Joi.array().items(ValidationError).description('A collection of validation errors')
 }).meta({

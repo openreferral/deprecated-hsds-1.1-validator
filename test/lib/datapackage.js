@@ -29,7 +29,7 @@ context('Datapackage class', () => {
   context('load()', () => {
 
     it('should load the data package instance at the givel URL', async () => {
-      dp.datapackage.should.not.be.null;
+      dp.package.should.not.be.null;
     });
 
   });
@@ -196,6 +196,29 @@ context('Datapackage class', () => {
       res.errors[0].row.should.eq(2);
       res.errors[0].col.should.eq(5);
     });
+
+  });
+
+  context('validate()', () => {
+
+    it('should throw an error if a package definition has not been loaded first', () => {
+
+      const dp = new DataPackage();
+
+      const p = dp.validatePackage();
+      return p.should.be.rejected;
+    });
+
+    it('should validate all package resources', async () => {
+
+      const uri = `${__dirname}/../data/package/datapackage.json`;
+      const dp = await DataPackage.load(uri);
+      const res = await dp.validatePackage();
+
+      res.should.be.an('array');
+      res.should.have.length(2);
+    });
+
 
   });
 

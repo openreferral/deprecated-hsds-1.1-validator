@@ -1,6 +1,6 @@
-# OpenReferral Playground
+# Open Referral - Validator microservice
 
-Collection of OpenReferral tools bundled in a self standing application.
+
 
 ## Running locally
 
