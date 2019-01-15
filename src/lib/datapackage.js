@@ -146,6 +146,11 @@ export class DataPackage {
     relations = false
   } = {}) {
 
+    const result = {
+      valid: true,
+      errors: []
+    };
+
     try {
 
       if (typeof resource === 'undefined') {
@@ -161,11 +166,6 @@ export class DataPackage {
       });
 
       let done, value;
-
-      const result = {
-        valid: true,
-        errors: []
-      };
 
       do {
 
@@ -223,11 +223,22 @@ export class DataPackage {
         delete result.errors;
       }
 
-      return result;
 
     } catch (e) {
-      throw e;
+      const error = (e.errors.length > 0 ? e.errors[0] : e);
+      const {
+        columnNumber,
+        rowNumber,
+        message
+      } = error;
+      result.errors.push({
+        col: columnNumber,
+        row: rowNumber,
+        description: message
+      });
     }
+
+    return result;
   }
 
 

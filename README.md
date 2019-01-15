@@ -57,3 +57,74 @@ Once all the dependencies have been downloaded, run the application with
 ```
 $ npm start
 ```
+
+# Using the validator service
+
+Once the service has been launched you can verify that the API is up by hitting http://localhost:1400/health.  If everything is ok you should get a blank page (or a 200 response).
+
+## OpenAPI definition
+
+The micro-service has an OpenAPI 2.x compliant definition that is automatically generated on startup.  You can find the OpenAPI (Swagger) definition here http://localhost:1400/swagger.  You can parse the OpenAPI definition with any popular API tool like [Swagger](https://swagger.io/tools/swagger-ui/), [Postman](https://www.getpostman.com/), etc and start interacting with the service.
+
+## API operations
+
+### GET /health
+
+#### Description
+
+Returns a 200 OK response
+
+### GET /validate/datapackage
+
+#### Description
+
+Validate an HSDS data package.  The operation requires the URI of valid **datapackage.json** file to be provided as a query parameter.  The service will parse the contents of the data package and try to validate all enlisted resources.
+
+#### Query parameters
+
+- **uri**: A valid local or remote URI of a **datapackage.json** descriptor file - required.
+
+#### Response
+
+The operation returns a collection of validation results, one per resource as defined within the data package descriptor.
+
+#### Example call
+
+Given we have a sample datapackage.json file at http://example.com/openreferral/datapackage.json that contains a small subset of resources, we can run the following command to validate the contained resources:
+
+```
+$ curl 'http://localhost:1400/validate/datapackage?uri=http://example.com/openreferral/datapackage.json'
+```
+
+If all data resources are valid, the service will return a response like:
+
+```
+[{
+  "valid": true,
+  "resource": "organization"
+}, {
+  "valid": true,
+  "resource": "program"
+}]
+```
+
+In case something is wrong, the response would be something like:
+
+```
+[
+    {
+        "valid": true,
+        "resource": "organization"
+    },
+    {
+        "valid": false,
+        "errors": [
+            {
+                "row": 3,
+                "description": "Foreign key \"organization_id\" violation in row 3"
+            }
+        ],
+        "resource": "program"
+    }
+]
+```
