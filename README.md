@@ -21,20 +21,20 @@ $ docker pull openreferral/validator
 Otherwise you can build the image on your local machine by running the following command within the project's directory:
 
 ```
-$ docker build --tag "openreferral-validator:latest" .
+$ docker build --tag "openreferral/validator:latest" .
 ```
 ### Running the service container
 
 After the Docker image is available you can launch a container by running:
 
 ```
-$ docker run -d --network=host --name=openreferral-validator openreferral-validator:latest
+$ docker run -d --network=host --name=openreferral-validator openreferral/validator:latest
 ```
 
 You can use any name you want, by replacing the **"openreferral-validator"** value with one of your choice.  The container will bind to  **localhost:1400** by default.  You can change the host and port of the container by setting the **HOST** and **PORT** environment variables like so:
 
 ```
-$ docker run -d --network=host -e HOST=localhost -e PORT=1300 --name=openreferral-validator openreferral-validator:latest
+$ docker run -d --network=host -e HOST=localhost -e PORT=1300 --name=openreferral-validator openreferral/validator:latest
 ```
 
 Once the container is launched, you can stop it and start / restart it on demand like so
