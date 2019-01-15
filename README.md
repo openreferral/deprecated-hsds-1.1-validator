@@ -128,3 +128,33 @@ In case something is wrong, the response would be something like:
     }
 ]
 ```
+
+### POST /validate/csv
+
+#### Description
+
+Validate an HSDS data resource file.  The operation validates an uploaded CSV data stream using the definition of a specified resource as found in the standard Open Referral data packagespecification. Clients should send a form payload containg a **type** field with the name of the HSDS logical resource and a **file** that contains the CSV data stream.
+
+#### Consumes
+
+- multipart/form-data
+
+#### Payload
+
+- **type**: A valid HSDS resource name, e.g. **contact**
+- **file**: The CSV file to be validated
+
+#### Example call
+
+```
+$ curl -F 'type=contact' -F 'file=@/home/chris/contacts.csv' 'http://localhost:1400/validate/csv'
+```
+
+A successful validation would return something like:
+
+```
+{
+    "valid": true,
+    "errors": []
+}
+```
