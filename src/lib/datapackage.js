@@ -101,11 +101,11 @@ export class DataPackage {
 
   /**
    * Validates an input data source against
-   * the resource specific schema.
+   * a resource specific schema.
    * @param  {[type]} data [description]
    * @return {[type]}      [description]
    */
-  async validate(source, resourceName, {
+  async validateResource(source, resourceName, {
     headersRow
   } = {}) {
 
@@ -113,6 +113,10 @@ export class DataPackage {
 
       if (typeof source === 'undefined') {
         throw new DataValidationError('A valid data source is required');
+      }
+
+      if (typeof resourceName === 'undefined') {
+        throw new DataValidationError('A valid Open Referral resource name should be provided');
       }
 
       // get the selected resource definition

@@ -2,7 +2,7 @@ const Joi = require('joi');
 
 
 /**
- * [StoryInput description]
+ * Resource
  * @type {[type]}
  */
 const Resource = Joi.object().keys({

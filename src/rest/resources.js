@@ -36,6 +36,11 @@ module.exports = function(server, datapackage) {
         })
       },
       handler() {
+
+        if (!datapackage) {
+          throw new Error('Data package instance not found');
+        }
+
         const {resources} = datapackage;
         return resources;
       }

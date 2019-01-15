@@ -42,18 +42,25 @@ module.exports = function(server, datapackage) {
         const {
           payload
         } = request;
-        const {
-          type
-        } = payload;
 
-        // get the file stream
-        const stream = request.payload.file;
+        const {
+          type,
+          file: stream
+        } = payload;
 
         try {
 
+          if (typeof type === 'undefined') {
+            throw new Error('Form should contain the field "type" with a valid resource name');
+          }
+
+          if (typeof stream === 'undefined') {
+            throw new Error('Form should contain the field "file" with a valid resource data stream');
+          }
+
           // validate the input stream using
           // the provided resource type definition
-          const result = await datapackage.validate(stream, type);
+          const result = await datapackage.validateResource(stream, type);
 
           if (result.errors.length > 0) {
             return h.response(result).code(400);
@@ -61,7 +68,7 @@ module.exports = function(server, datapackage) {
 
           return h.response(result).code(200);
         } catch (e) {
-          return Boom.badRequest(e.toString());
+          return Boom.badRequest(e.message);
         }
 
       }
