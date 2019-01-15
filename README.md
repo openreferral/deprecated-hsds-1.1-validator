@@ -1,8 +1,6 @@
 # Open Referral - Validator microservice
 
-# Introduction
-
-
+A micro-service with a **RESTful API** for validating data packages and resources using the official [Human Services Data Specification](https://openreferral.readthedocs.io/en/latest/hsds/) from [Open Referral](https://openreferral.org/).  
 
 # Running the service
 
