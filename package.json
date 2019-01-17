@@ -20,6 +20,7 @@
     "winston": "^3.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
     "@babel/node": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
@@ -41,7 +42,8 @@
     "webpack-dev-server": "^3.1.14"
   },
   "scripts": {
-    "start": "node_modules/.bin/nodemon --ignore src/js/ --ext js,html --exec babel-node src/app.js",
+    "build": "node_modules/.bin/babel src --out-dir dist --copy-files",
+    "start": "npm run build && node dist/app.js",
     "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html --exec babel-node src/app.js",
     "test": "mocha --recursive --require @babel/register --require @babel/polyfill --colors test/"
   },

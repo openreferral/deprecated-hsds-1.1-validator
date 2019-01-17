@@ -132,7 +132,7 @@ context('/resources', () => {
         url: `/validate/datapackage?uri=${uri}`
       });
 
-      response.statusCode.should.equal(400);
+      response.statusCode.should.equal(200);
     });
 
 

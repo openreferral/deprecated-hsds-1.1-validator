@@ -319,7 +319,6 @@ export class DataPackage {
     }
 
     return result;
-
   }
 
 }
@@ -341,8 +340,8 @@ const _checkIfResourceExists = async (resource) => {
 
     // Remote source
     if (resource.remote) {
-      const response = await axios.head(resource.source);
-      return (response.status === 200);
+      await axios.head(resource.source);
+      return true;
     }
 
     // Local source
@@ -384,7 +383,7 @@ const _resolveErrors = (resource, e) => {
           const error = {
             col: columnNumber,
             row: rowNumber,
-            description: message
+            message
           };
 
           errors.push(error);
@@ -394,17 +393,39 @@ const _resolveErrors = (resource, e) => {
         const error = {
           col: e.columnNumber,
           row: e.rowNumber,
-          description: e.message
+          message: e.message
         };
 
         errors.push(error);
       }
     } else if (e instanceof DataValidationError) {
       const error = {
-        description: e.message
+        message: e.message
       };
 
       errors.push(error);
+    } else if (e instanceof TypeError) {
+
+      // error thrown from 'datapackage-js' when a referenced
+      // resource is missing
+      if (e.message === 'Cannot read property \'tabular\' of null') {
+
+        // get any missing referenced resources from the package
+        const missing = _getMissingReferencedResources(resource);
+
+        const error = {
+          message: 'Some resource is missing according to the data package descriptor'
+        };
+
+        if (!_.isEmpty(missing)) {
+          error.details = `The following referenced resources are missing [${missing}]`;
+        }
+
+        errors.push(error);
+      }
+    } else {
+
+      console.log('other error');
     }
 
     // enrich errors with details
@@ -441,5 +462,46 @@ const _addErrorDetails = (resource, error) => {
 
   }
 
+};
 
+/**
+ * [_getMissingRelationalResources description]
+ * @param  {[type]} resource [description]
+ * @return {[type]}          [description]
+ */
+const _getMissingReferencedResources = (resource) => {
+
+  const missing = [];
+
+  try {
+
+    const resources = {};
+    if (resource._getTable() && resource._getTable().schema) {
+      for (const fk of resource._getTable().schema.foreignKeys) {
+        resources[fk.reference.resource] = resources[fk.reference.resource] || [];
+        for (const field of fk.reference.fields) {
+          resources[fk.reference.resource].push(field);
+        }
+      }
+    }
+
+    // Fill relations
+    const relations = {};
+    for (const [res] of Object.entries(resources)) {
+
+      if (res && !resource._dataPackage) continue;
+
+      relations[res] = relations[res] || [];
+      const data = resource ? resource._dataPackage.getResource(res) : this;
+
+      // oops, a missing referenced resource
+      if (!data) {
+        missing.push(res);
+      }
+    }
+  } catch (e) {
+    // silent
+  }
+
+  return missing;
 };

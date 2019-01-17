@@ -124,7 +124,7 @@ context('Datapackage class', () => {
       const res = await dp.validateResource(data, 'program');
       res.errors.should.have.length(1);
       res.errors[0].row.should.eq(2);
-      res.errors[0].description.should.eq('The column header names do not match the field names in the schema');
+      res.errors[0].message.should.eq('The column header names do not match the field names in the schema');
     });
 
     it('should throw an error if a row has more fields', async () => {
@@ -143,7 +143,7 @@ context('Datapackage class', () => {
       const res = await dp.validateResource(data, 'program');
       res.errors.should.have.length(1);
       res.errors[0].row.should.eq(2);
-      res.errors[0].description.should.eq('The column header names do not match the field names in the schema');
+      res.errors[0].message.should.eq('The column header names do not match the field names in the schema');
     });
 
     it('should throw an error if a bad enum value is provided', async () => {
@@ -161,7 +161,7 @@ context('Datapackage class', () => {
 
     it('should throw an error if wrong type of value is provided', async () => {
       const data = [
-        ['id', 'name', 'alternate_name', 'description', 'email', 'url', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status'],
+        ['id', 'name', 'alternate_name', 'message', 'email', 'url', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status'],
         ['1',
           'org A',
           'alter org A', 'A descr',
@@ -175,12 +175,11 @@ context('Datapackage class', () => {
       const res = await dp.validateResource(data, 'organization');
       res.errors.should.have.length(1);
       res.errors[0].row.should.eq(2);
-      res.errors[0].col.should.eq(1);
     });
 
     it('should throw an error if a bad formatted \'email\' value is provided', async () => {
       const data = [
-        ['id', 'name', 'alternate_name', 'description', 'email', 'url', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status'],
+        ['id', 'name', 'alternate_name', 'message', 'email', 'url', 'tax_status', 'tax_id', 'year_incorporated', 'legal_status'],
         ['aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaa1',
           'org A',
           'alter org A', 'A descr',
@@ -192,9 +191,9 @@ context('Datapackage class', () => {
 
       // validate the source against the schema
       const res = await dp.validateResource(data, 'organization');
+      console.log(res);
       res.errors.should.have.length(1);
       res.errors[0].row.should.eq(2);
-      res.errors[0].col.should.eq(5);
     });
 
   });
