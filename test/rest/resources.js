@@ -2,9 +2,7 @@ const chai = require('chai');
 chai.should();
 
 const Hapi = require('hapi');
-const {
-  DataPackage
-} = require('../../src/lib/datapackage');
+const DataPackage = require('../../src/lib/datapackage');
 
 context('/resources', () => {
 

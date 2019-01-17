@@ -12,9 +12,7 @@ const {
   ValidationResult
 } = require('../schemas/validation');
 
-const {
-  DataPackage
-} = require('../lib/datapackage');
+const DataPackage = require('../lib/datapackage');
 
 module.exports = function(server, datapackage) {
 

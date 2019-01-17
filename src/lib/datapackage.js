@@ -1,19 +1,18 @@
-import {
-  Package
-} from 'datapackage';
-
-import _ from 'lodash/core';
-import fs from 'fs';
-import axios from 'axios';
-
-import {
+const {
   Table,
   errors
-} from 'tableschema';
+} = require('tableschema');
 
-import {
+const axios = require('axios');
+const _ = require('lodash/core');
+const fs = require('fs');
+
+const {
+  Package
+} = require('datapackage');
+const {
   DataValidationError
-} from './errors';
+} = require('./errors');
 
 const {
   TableSchemaError
@@ -24,7 +23,7 @@ const {
  *
  * @author Chris Spiliotopoulos
  */
-export class DataPackage {
+class DataPackage {
 
   /**
    * Constructor
@@ -108,7 +107,7 @@ export class DataPackage {
    */
   async validatePackage({
     relations
-  }={}) {
+  } = {}) {
 
     if (!this.package) {
       throw new Error('Undefined package instance - use the static load() method to load a package definition first');
@@ -423,9 +422,16 @@ const _resolveErrors = (resource, e) => {
 
         errors.push(error);
       }
-    } else {
+    } else if (e.message === 'Request failed with status code 404') {
 
-      console.log('other error');
+      // missing resource (Axios request error)
+
+      const error = {
+        message: 'Resource not found',
+        details: `Resource data could not be fetched from '${e.config.url}'`
+      };
+      errors.push(error);
+
     }
 
     // enrich errors with details
@@ -505,3 +511,6 @@ const _getMissingReferencedResources = (resource) => {
 
   return missing;
 };
+
+
+module.exports = DataPackage;

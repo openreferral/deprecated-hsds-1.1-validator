@@ -51,7 +51,7 @@ ValidatorError.prototype.constructor = ValidatorError;
 /*
  * Exports
  */
-export {
+module.exports = {
   UnsupportedValidatorError,
   DataValidationError,
   ValidatorError

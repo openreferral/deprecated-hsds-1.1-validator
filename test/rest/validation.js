@@ -8,9 +8,7 @@ const fs = require('fs');
 const streamToPromise = require('stream-to-promise');
 
 
-const {
-  DataPackage
-} = require('../../src/lib/datapackage');
+const DataPackage = require('../../src/lib/datapackage');
 
 const sandbox = sinon.createSandbox();
 

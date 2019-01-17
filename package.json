@@ -42,10 +42,9 @@
     "webpack-dev-server": "^3.1.14"
   },
   "scripts": {
-    "build": "node_modules/.bin/babel src --out-dir dist --copy-files",
-    "start": "npm run build && node dist/app.js",
-    "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html --exec babel-node src/app.js",
-    "test": "mocha --recursive --require @babel/register --require @babel/polyfill --colors test/"
+    "start": "node src/app.js",
+    "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html src/app.js",
+    "test": "mocha --recursive --colors test/"
   },
   "main": "src/server.js",
   "author": "@spilio",

@@ -13,7 +13,7 @@ const pluginHapiSwaggered = require('hapi-swaggered');
 const Vision = require('vision');
 const Inert = require('inert');
 
-const {DataPackage} = require('./lib/datapackage');
+const DataPackage = require('./lib/datapackage');
 
 /*
  * Load configuration environment

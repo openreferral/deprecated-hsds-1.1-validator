@@ -6,9 +6,7 @@ chai.use(SinonChai);
 const chaiAsPromised = require('chai-as-promised');
 chai.use(chaiAsPromised);
 
-const {
-  DataPackage
-} = require('../../src/lib/datapackage');
+const DataPackage = require('../../src/lib/datapackage');
 
 const sandbox = sinon.createSandbox();
 
