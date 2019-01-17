@@ -456,7 +456,7 @@ const _resolveErrors = (resource, e) => {
 const _addErrorDetails = (resource, error) => {
 
   // headers do not match schema fields
-  if (error.description === 'The column header names do not match the field names in the schema') {
+  if (error.message === 'The column header names do not match the field names in the schema') {
 
     // get the field names
     const fields = _.map(resource.schema.fields, 'name');
