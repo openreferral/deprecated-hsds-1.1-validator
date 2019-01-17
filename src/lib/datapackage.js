@@ -106,7 +106,9 @@ export class DataPackage {
    *
    * @return {Promise} [description]
    */
-  async validatePackage() {
+  async validatePackage({
+    relations
+  }={}) {
 
     if (!this.package) {
       throw new Error('Undefined package instance - use the static load() method to load a package definition first');
@@ -124,7 +126,7 @@ export class DataPackage {
 
       // validate each individual resource
       const result = await this.validatePackageResource(resource, {
-        relations: true
+        relations
       });
 
       // set the resource name on the result set

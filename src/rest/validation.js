@@ -108,7 +108,9 @@ module.exports = function(server, datapackage) {
       validate: {
         query: {
           uri: Joi.string().required()
-            .description('Data package descriptor file URL')
+            .description('Data package descriptor file URL'),
+          relations: Joi.boolean().default(false)
+            .description('Flag indicating whether to check data relations through foreign keys')
         }
       },
       response: {
@@ -122,7 +124,8 @@ module.exports = function(server, datapackage) {
         } = request;
 
         const {
-          uri
+          uri,
+          relations
         } = query;
 
         try {
@@ -131,7 +134,9 @@ module.exports = function(server, datapackage) {
           const dp = await DataPackage.load(uri);
 
           // validate the full package
-          const results = await dp.validatePackage();
+          const results = await dp.validatePackage({
+            relations
+          });
 
           // check if there is at least 1 failed validation
           const matches = _.find(results, {
