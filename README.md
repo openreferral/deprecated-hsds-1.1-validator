@@ -12,7 +12,7 @@ You need to have [Docker](https://www.docker.com/) service installed on your loc
 
 The fastest way to get started is to pull the latest pre-built image from the [Docker Hub](https://hub.docker.com/r/openreferral/playground/) registry by running:
 
-```
+```bash
 $ docker pull openreferral/validator
 ```
 
@@ -20,26 +20,26 @@ $ docker pull openreferral/validator
 
 Otherwise you can build the image on your local machine by running the following command within the project's directory:
 
-```
+```bash
 $ docker build --tag "openreferral/validator:latest" .
 ```
 ### Running the service container
 
 After the Docker image is available you can launch a container by running:
 
-```
+```bash
 $ docker run -d --network=host --name=openreferral-validator openreferral/validator:latest
 ```
 
 You can use any name you want, by replacing the **"openreferral-validator"** value with one of your choice.  The container will bind to  **localhost:1400** by default.  You can change the host and port of the container by setting the **HOST** and **PORT** environment variables like so:
 
-```
+```bash
 $ docker run -d --network=host -e HOST=localhost -e PORT=1300 --name=openreferral-validator openreferral/validator:latest
 ```
 
 Once the container is launched, you can stop it and start / restart it on demand like so
 
-```
+```bash
 $ docker stop openreferral-validator
 $ docker restart openreferral-validator
 ```
@@ -49,12 +49,12 @@ In order to run the project locally you need to have the latest [NodeJS](https:/
 
 Once your environment is all set up, clone the repository, go into the root directory and install all dependencies by running
 
-```
+```bash
 $ npm install
 ```
 Once all the dependencies have been downloaded, run the application with
 
-```
+```bash
 $ npm start
 ```
 
@@ -68,13 +68,13 @@ The micro-service has an OpenAPI 2.x compliant definition that is automatically 
 
 ## API operations
 
-### GET /health
+### `GET /health`
 
 #### Description
 
 Returns a 200 OK response
 
-### GET /validate/datapackage
+### `GET /validate/datapackage`
 
 #### Description
 
@@ -82,8 +82,8 @@ Validate an HSDS data package.  The operation requires the URI of valid **datapa
 
 #### Query parameters
 
-- **uri**: A valid local or remote URI of a **datapackage.json** descriptor file - required.
-- _relations_: (optional) A boolean flag indicating whether to enable data relations check through defined foreign keys - default is **false**
+- `uri`: A valid local or remote URI of a **datapackage.json** descriptor file.
+- `relations`: (optional) A boolean flag indicating whether to enable data relations check through defined foreign keys - default is **false**
 
 #### Response
 
@@ -93,13 +93,13 @@ The operation returns a collection of validation results, one per resource as de
 
 Given we have a sample datapackage.json file at http://example.com/openreferral/datapackage.json that contains a small subset of resources, we can run the following command to validate the contained resources:
 
-```
+```bash
 $ curl 'http://localhost:1400/validate/datapackage?uri=http://example.com/openreferral/datapackage.json'
 ```
 
 If all data resources are valid, the service will return a response like:
 
-```
+```json
 [{
   "valid": true,
   "resource": "organization"
@@ -111,7 +111,7 @@ If all data resources are valid, the service will return a response like:
 
 In case something is wrong, the response would be something like:
 
-```
+```json
 [
     {
         "valid": true,
@@ -130,7 +130,7 @@ In case something is wrong, the response would be something like:
 ]
 ```
 
-### POST /validate/csv
+### `POST /validate/csv`
 
 #### Description
 
@@ -142,18 +142,18 @@ Validate an HSDS data resource file.  The operation validates an uploaded CSV da
 
 #### Payload
 
-- **type**: A valid HSDS resource name, e.g. **contact**
-- **file**: The CSV file to be validated
+- `type`: A valid HSDS resource name, e.g. **contact**
+- `file`: The CSV file to be validated
 
 #### Example call
 
-```
+```bash
 $ curl -F 'type=contact' -F 'file=@/home/chris/contacts.csv' 'http://localhost:1400/validate/csv'
 ```
 
 A successful validation would return something like:
 
-```
+```json
 {
     "valid": true,
     "errors": []
