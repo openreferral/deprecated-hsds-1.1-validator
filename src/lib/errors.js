@@ -20,20 +20,19 @@ UnsupportedValidatorError.prototype.constructor = UnsupportedValidatorError;
 /**
  * DataValidationError
  */
-function DataValidationError({
+function DataValidationError(message, {
   row,
-  col,
-  description
+  col
 } = {}) {
   this.name = 'DataValidationError';
+  this.message = message;
   this.row = row;
   this.col = col;
-  this.description = description;
 }
 DataValidationError.prototype = Object.create(Error.prototype);
 DataValidationError.prototype.constructor = DataValidationError;
 DataValidationError.prototype.toString = function() {
-  return `Row: ${this.row}, Col: ${this.col} ${this.description}`;
+  return `Row: ${this.row}, Col: ${this.col} ${this.message}`;
 };
 
 /**

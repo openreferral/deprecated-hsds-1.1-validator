@@ -3,6 +3,8 @@ import {
 } from 'datapackage';
 
 import _ from 'lodash/core';
+import fs from 'fs';
+import axios from 'axios';
 
 import {
   Table,
@@ -157,6 +159,11 @@ export class DataPackage {
         throw new DataValidationError('A valid package resource is required');
       }
 
+      // check whether the resource exists physically
+      if (!await _checkIfResourceExists(resource)) {
+        throw new DataValidationError(`Resource '${resource.source}' is not available`);
+      }
+
       /*
        * iterate the data set
        */
@@ -184,37 +191,25 @@ export class DataPackage {
            */
           if (value instanceof TableSchemaError) {
 
-            result.valid = false;
+            // resolve the errors
+            const errors = _resolveErrors(resource, value);
+            result.errors = result.errors.concat(errors);
 
-            // get the error details and add it to
-            // the result list
-            const error = (value.errors.length > 0 ? value.errors[0] : value);
-            const {
-              columnNumber,
-              rowNumber,
-              message
-            } = error;
-            result.errors.push({
-              col: columnNumber,
-              row: rowNumber,
-              description: message
-            });
+            /*
+             * if the error refers to bad column header schema,
+             * stop the iteration as this will be the same for all
+             * rows
+             */
+            if (value.message === 'The column header names do not match the field names in the schema') {
+              done = true;
+            }
+
           }
-
-
         } catch (e) {
 
-          const error = e.errors[0];
-          const {
-            columnNumber,
-            rowNumber,
-            message
-          } = error;
-          throw new DataValidationError({
-            row: rowNumber,
-            col: columnNumber,
-            description: message
-          });
+          // resolve the errors
+          const errors = _resolveErrors(resource, e);
+          result.errors = result.errors.concat(errors);
         }
 
       } while (!done);
@@ -223,24 +218,23 @@ export class DataPackage {
         delete result.errors;
       }
 
-
     } catch (e) {
-      const error = (e.errors.length > 0 ? e.errors[0] : e);
-      const {
-        columnNumber,
-        rowNumber,
-        message
-      } = error;
-      result.errors.push({
-        col: columnNumber,
-        row: rowNumber,
-        description: message
-      });
+
+      // resolve the errors
+      const errors = _resolveErrors(resource, e);
+      result.errors = result.errors.concat(errors);
+    }
+
+    // if there are errors, mark the
+    // result as invalid
+    if (result.errors) {
+      result.valid = false;
+    } else {
+      delete result.errors;
     }
 
     return result;
   }
-
 
   /**
    * Validates an input data source against
@@ -252,96 +246,198 @@ export class DataPackage {
     headersRow
   } = {}) {
 
-    try {
+    if (typeof source === 'undefined') {
+      throw new DataValidationError('A valid data source is required');
+    }
 
-      if (typeof source === 'undefined') {
-        throw new DataValidationError('A valid data source is required');
+    if (typeof resourceName === 'undefined') {
+      throw new DataValidationError('A valid Open Referral resource name should be provided');
+    }
+
+    // get the selected resource definition
+    const resource = this.package.getResource(resourceName);
+
+    // create a new table instance
+    // using the selected resource
+    // schema and data source
+    const table = await Table.load(source, {
+      schema: resource.schema,
+      headers: headersRow
+    });
+
+    /*
+     * iterate the data set
+     */
+    const iterator = await table.iter({
+      forceCast: true
+    });
+
+    let done, value;
+
+    const result = {
+      valid: true,
+      errors: []
+    };
+
+    do {
+
+      try {
+
+        // get the next line
+        const res = await iterator.next();
+        ({
+          done,
+          value
+        } = res);
+
+        /*
+         * in 'forceCast' mode, bad lines will be
+         * replaced with an error instance
+         */
+        if (value instanceof TableSchemaError) {
+          // resolve the errors
+          const errors = _resolveErrors(resource, value);
+          result.errors = result.errors.concat(errors);
+        }
+      } catch (e) {
+
+        // resolve the errors
+        const errors = _resolveErrors(resource, e);
+        result.errors = result.errors.concat(errors);
       }
 
-      if (typeof resourceName === 'undefined') {
-        throw new DataValidationError('A valid Open Referral resource name should be provided');
-      }
+    } while (!done);
 
-      // get the selected resource definition
-      const resource = this.package.getResource(resourceName);
+    // if there are errors, mark the
+    // result as invalid
+    if (result.errors.length > 0) {
+      result.valid = false;
+    } else {
+      delete result.errors;
+    }
 
-      // create a new table instance
-      // using the selected resource
-      // schema and data source
-      const table = await Table.load(source, {
-        schema: resource.schema,
-        headers: headersRow
-      });
+    return result;
 
-      /*
-       * iterate the data set
-       */
-      const iterator = await table.iter({
-        forceCast: true
-      });
+  }
 
-      let done, value;
+}
 
-      const result = {
-        valid: true,
-        errors: []
-      };
+/*
+ * Private Methods
+ */
 
-      do {
+/**
+ * Checks whether a resource physically
+ * exists.
+ *
+ * @param  {[type]} resource [description]
+ * @return {[type]}          [description]
+ */
+const _checkIfResourceExists = async (resource) => {
 
-        try {
+  try {
 
-          // get the next line
-          const res = await iterator.next();
-          ({
-            done,
-            value
-          } = res);
+    // Remote source
+    if (resource.remote) {
+      const response = await axios.head(resource.source);
+      return (response.status === 200);
+    }
 
-          /*
-           * in 'forceCast' mode, bad lines will be
-           * replaced with an error instance
-           */
-          if (value instanceof TableSchemaError) {
+    // Local source
+    return fs.existsSync(resource.source);
 
-            result.valid = false;
+  } catch (e) {
+    return false;
+  }
+};
 
-            // get the error details and add it to
-            // the result list
-            const error = (value.errors.length > 0 ? value.errors[0] : value);
-            const {
-              columnNumber,
-              rowNumber,
-              message
-            } = error;
-            result.errors.push({
-              col: columnNumber,
-              row: rowNumber,
-              description: message
-            });
-          }
-        } catch (e) {
 
-          const error = e.errors[0];
+/**
+ * Resolves an error.
+ *
+ * @param  {[type]} resource [description]
+ * @param  {[type]} e    [description]
+ * @return {[type]}          [description]
+ */
+const _resolveErrors = (resource, e) => {
+
+  const errors = [];
+
+  try {
+
+    // get the error details and add it to
+    // the result list
+    if (e instanceof TableSchemaError) {
+
+      if (e.errors.length > 0) {
+
+        for (const err of e.errors) {
+
           const {
             columnNumber,
             rowNumber,
             message
-          } = error;
-          throw new DataValidationError({
-            row: rowNumber,
+          } = err;
+
+          const error = {
             col: columnNumber,
+            row: rowNumber,
             description: message
-          });
+          };
+
+          errors.push(error);
         }
+      } else {
 
-      } while (!done);
+        const error = {
+          col: e.columnNumber,
+          row: e.rowNumber,
+          description: e.message
+        };
 
-      return result;
+        errors.push(error);
+      }
+    } else if (e instanceof DataValidationError) {
+      const error = {
+        description: e.message
+      };
 
-    } catch (e) {
-      throw e;
+      errors.push(error);
     }
+
+    // enrich errors with details
+    for (const error of errors) {
+      _addErrorDetails(resource, error);
+    }
+
+  } catch (e) {
+    console.error(`Failed to resolve errors [${e.message}]`);
   }
 
-}
+  return errors;
+
+};
+
+/**
+ * Enriches a validation error with
+ * extra details.
+ *
+ * @param {[type]} error [description]
+ */
+const _addErrorDetails = (resource, error) => {
+
+  // headers do not match schema fields
+  if (error.description === 'The column header names do not match the field names in the schema') {
+
+    // get the field names
+    const fields = _.map(resource.schema.fields, 'name');
+    error.details = ['According the the schema, the data table should have the following fields in this exact order',
+      ` [${fields}].`,
+      ' All table field columns should be present and with the same name as defined in the schema',
+      ' even if they are defined as optional (see https://frictionlessdata.io/specs/table-schema/#descriptor).'
+    ].join('');
+
+  }
+
+
+};

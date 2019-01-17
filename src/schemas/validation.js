@@ -7,7 +7,9 @@ const ValidationError = Joi.object().keys({
   row: Joi.number()
     .description('The row number of the bad entry'),
   description: Joi.string()
-    .description('A description about the problem')
+    .description('A description about the problem'),
+  details: Joi.string()
+    .description('Extra details for guiding the client on how to resolve the issue')
 }).meta({
   className: 'ValidationError',
   description: 'Describes an error that occured during a data resource validation'

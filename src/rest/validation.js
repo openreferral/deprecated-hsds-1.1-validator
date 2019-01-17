@@ -72,7 +72,7 @@ module.exports = function(server, datapackage) {
           // the provided resource type definition
           const result = await datapackage.validateResource(stream, type);
 
-          if (result.errors.length > 0) {
+          if (!result.valid) {
             return h.response(result).code(400);
           }
 
