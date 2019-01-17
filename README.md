@@ -83,7 +83,7 @@ Validate an HSDS data package.  The operation requires the URI of valid **datapa
 #### Query parameters
 
 - **uri**: A valid local or remote URI of a **datapackage.json** descriptor file - required.
-- _relations_: (optional) A boolean flag indicating whether to enable data relations check through defined foreign keys
+- _relations_: (optional) A boolean flag indicating whether to enable data relations check through defined foreign keys - default is **false**
 
 #### Response
 
