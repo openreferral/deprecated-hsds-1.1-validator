@@ -209,7 +209,6 @@ const Application = (function Bootstrap() {
 
 }());
 
-
 /**
  * Start the application
  */
