@@ -66,6 +66,7 @@ Once the service has been launched you can verify that the API is up by hitting 
 
 The micro-service has an OpenAPI 2.x compliant definition that is automatically generated on startup.  You can find the OpenAPI (Swagger) definition here http://localhost:1400/swagger.  You can parse the OpenAPI definition with any popular API tool like [Swagger](https://swagger.io/tools/swagger-ui/), [Postman](https://www.getpostman.com/), etc and start interacting with the service.
 
+
 ## API operations
 
 ### `GET /health`
@@ -163,5 +164,3 @@ A successful validation would return something like:
 # Sample data sets
 
 You can test drive the validator using the official *Open Referral* sample data sets found in the dedicated [Github repository](https://github.com/openreferral/sample-data).  Clone the repository or [download as a ZIP archive](https://github.com/openreferral/sample-data/archive/master.zip) and extract them locally.
-
-  

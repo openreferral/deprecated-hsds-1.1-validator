@@ -1,0 +1,23 @@
+# Site wide configuration
+
+title: Open Referral Validator
+locale: en_US
+description: Microservice for Open Referral HSDS resources
+search: false
+baseurl: "" # the subpath of your site, e.g. /blog
+url: https://spilio.github.io/openreferral-validator
+github: https://github.com/spilio/openreferral-validator
+
+
+# Jekyll configuration
+
+permalink:   /:categories/:title/
+markdown:    kramdown
+highlighter: rouge
+
+
+# Site owner
+owner:
+  name: Chris Spiliotopoulos
+  email: chrysanthos.spiliotopoulos@gmail.com
+  linkedin: https://www.linkedin.com/in/spilio

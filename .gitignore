@@ -39,3 +39,6 @@ jspm_packages
 package-lock.json
 .env
 dist/
+
+docs/_site
+docs/Gemfile.lock
