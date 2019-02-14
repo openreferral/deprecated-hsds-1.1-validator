@@ -6,6 +6,7 @@ layout: default
 title: Open Referral Validator
 ---
 
+{% include base.html %}
 
 <div class="container">
 
@@ -20,7 +21,7 @@ title: Open Referral Validator
 
       <div class="value-props row">
         <div class="four columns value-prop">
-          <img class="value-img" src="images/openreferral-logo.png">
+          <img class="value-img" src="{{base}}/images/openreferral-logo.png">
           Validation of data resources according to the <a href="http://docs.openreferral.org/en/latest/" target="_blank">Human Services Data Specifications</a>.
         </div>
         <div class="four columns value-prop">
@@ -31,7 +32,7 @@ title: Open Referral Validator
           any infrastructure.
         </div>
         <div class="four columns value-prop">
-          <img class="value-img" src="images/openapi.png">
+          <img class="value-img" src="{{base}}/images/openapi.png">
           A RESTful API with an Open API definition for
           integration with other services.
         </div>
@@ -147,7 +148,7 @@ A client system can use the validator for validating standalone
 HSDS data resource files in CSV format.  The input can be either
 in the form of a physical file at some URL or a binary stream.
 
-![Validating a CSV resource](images/usage-csv.png)
+![Validating a CSV resource]({{base}}/images/usage-csv.png)
 
 In this validation mode the validator is
 using the resource schemas as defined in the full HSDS specification.
@@ -158,7 +159,7 @@ In this validation mode the client must provide the location of
 a valid **datapackage.json** file that describes an HSDS data resource
 list that is treated as a bundle.
 
-![Validating a data package](images/usage-datapackage.png)
+![Validating a data package]({{base}}/images/usage-datapackage.png)
 
 The validator will process each defined resource sequentially
 and check whether the resource conforms to the specified schema.
@@ -180,11 +181,11 @@ tool for visualizing and interacting with **Open APIs**.
 
 ### API Surface
 
-![API surface](images/api-graph.png)
+![API surface]({{base}}/images/api-graph.png)
 
 ## API Operations
 
-![API operations](images/api-operations.png)
+![API operations]({{base}}/images/api-operations.png)
 
 ### `GET /health`
 
