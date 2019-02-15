@@ -16,6 +16,10 @@ blockquote {
   padding: 1em 0 1em 1em;
 }
 
+img.scale-with-grid {
+  outline: 0; max-width: 100%; height: auto;
+}
+
 .value-prop {
   margin-top: 1rem;
 }

@@ -148,7 +148,7 @@ A client system can use the validator for validating standalone
 HSDS data resource files in CSV format.  The input can be either
 in the form of a physical file at some URL or a binary stream.
 
-![Validating a CSV resource]({{base}}/images/usage-csv.png)
+![Validating a CSV resource]({{base}}/images/usage-csv.png){: .scale-with-grid}
 
 In this validation mode the validator is
 using the resource schemas as defined in the full HSDS specification.
@@ -159,7 +159,7 @@ In this validation mode the client must provide the location of
 a valid **datapackage.json** file that describes an HSDS data resource
 list that is treated as a bundle.
 
-![Validating a data package]({{base}}/images/usage-datapackage.png)
+![Validating a data package]({{base}}/images/usage-datapackage.png){: .scale-with-grid}
 
 The validator will process each defined resource sequentially
 and check whether the resource conforms to the specified schema.
@@ -181,11 +181,11 @@ tool for visualizing and interacting with **Open APIs**.
 
 ### API Surface
 
-![API surface]({{base}}/images/api-graph.png)
+![API surface]({{base}}/images/api-graph.png){: .scale-with-grid}
 
 ## API Operations
 
-![API operations]({{base}}/images/api-operations.png)
+![API operations]({{base}}/images/api-operations.png){: .scale-with-grid}
 
 ### `GET /health`
 
