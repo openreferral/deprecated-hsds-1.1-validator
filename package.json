@@ -1,7 +1,7 @@
 {
   "name": "openreferral-validator",
-  "private": true,
-  "version": "0.0.1",
+  "private": false,
+  "version": "1.0.1",
   "description": "Open Referral - Validator microservice",
   "dependencies": {
     "axios": "^0.18.0",
@@ -37,6 +37,7 @@
     "nodemon": "^1.12.1",
     "sinon": "^7.2.2",
     "sinon-chai": "^2.14.0",
+    "standard-version": "^5.0.0",
     "stream-to-promise": "^2.2.0",
     "webpack": "^4.28.4",
     "webpack-dev-server": "^3.1.14"
@@ -44,7 +45,8 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "env $(cat .env) NODE_ENV=dev node_modules/.bin/nodemon --ignore src/js/ --ignore src/static/ --ext js,html src/app.js",
-    "test": "mocha --recursive --colors test/"
+    "test": "mocha --recursive --colors test/",
+    "release": "standard-version"
   },
   "main": "src/server.js",
   "author": "@spilio",
