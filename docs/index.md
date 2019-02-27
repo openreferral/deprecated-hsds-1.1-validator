@@ -208,6 +208,11 @@ Validate an HSDS data package.  The operation requires the URI of valid **datapa
 
 The operation returns a collection of validation results, one per resource as defined within the data package descriptor.
 
+##### Statuses
+
+- **200** *OK* - Datapackage contents are valid
+- **422** *Unprocessable Entity* - The request was well-formed but validation errors were detected
+
 #### Example call
 
 Given we have a sample datapackage.json file at http://example.com/openreferral/datapackage.json that contains a small subset of resources, we can run the following command to validate the contained resources:
@@ -264,6 +269,16 @@ Validate an HSDS data resource file.  The operation validates an uploaded CSV da
 - `type`: A valid HSDS resource name, e.g. **contact**
 - `file`: The CSV file to be validated
 
+#### Response
+
+The operation returns an object with the validation results.
+
+##### Statuses
+
+- **200** *OK* - CSV contents are valid
+- **422** *Unprocessable Entity* - The request was well-formed but validation errors were detected
+
+
 #### Example call
 
 ```bash
@@ -278,6 +293,9 @@ A successful validation would return something like:
     "errors": []
 }
 ```
+
+
+
 
 </div>
 
