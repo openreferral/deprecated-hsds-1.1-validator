@@ -71,7 +71,7 @@ module.exports = function(server, datapackage) {
           const result = await datapackage.validateResource(stream, type);
 
           if (!result.valid) {
-            return h.response(result).code(400);
+            return h.response(result).code(422);
           }
 
           return h.response(result).code(200);
@@ -146,7 +146,7 @@ module.exports = function(server, datapackage) {
 
           // if there is a failed validation, return 400
           if (matches) {
-            res.code(400);
+            res.code(422);
           }
 
           return res;
