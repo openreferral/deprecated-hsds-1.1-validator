@@ -2,7 +2,7 @@
 
 Visit [Project Github page](https://openreferral.github.io/hsds-validator/).
 
-A micro-service with a **RESTful API** for validating data packages and resources using the official [Human Services Data Specification](https://openreferral.readthedocs.io/en/latest/hsds/) from [Open Referral](https://openreferral.org/).  
+A micro-service with a **RESTful API** for validating data packages and resources using the official [Human Services Data Specification](https://openreferral.readthedocs.io/en/latest/hsds/) from [Open Referral](https://openreferral.org/). Thanks to [@spilio](https://github.com/spilio/) for development of this tool.  
 
 # Running the service
 
@@ -165,4 +165,4 @@ A successful validation would return something like:
 
 # Sample data sets
 
-You can test drive the validator using the official *Open Referral* sample data sets found in the dedicated [Github repository](https://github.com/openreferral/sample-data).  Clone the repository or [download as a ZIP archive](https://github.com/openreferral/sample-data/archive/master.zip) and extract them locally.
+You can test drive the validator using the *HSDS sample data sets* found in the dedicated [Github repository](https://github.com/openreferral/sample-data).  Clone the repository or [download as a ZIP archive](https://github.com/openreferral/sample-data/archive/master.zip) and extract them locally.
